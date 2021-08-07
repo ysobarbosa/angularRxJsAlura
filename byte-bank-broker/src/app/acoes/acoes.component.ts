@@ -2,7 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {Acoes} from './modelo/acoes'
 import {AcoesService} from './acoes.service'
-import { Subscription } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-acoes',
@@ -11,7 +12,16 @@ import { Subscription } from 'rxjs';
 })
 export class AcoesComponent {
   acoesInput = new FormControl();
-  acoes$ = this.acoesService.getAcoes(); // não fez requisição a api
+  todasAcoes$ = this.acoesService.getAcoes().pipe(tap(() => console.log("Fluxo inicial")));
+  filtroPeloInput$ = this.acoesInput.valueChanges.pipe(
+    tap(() => console.log("Fluxo do filtro")),
+    switchMap((valorDigitado) => this.acoesService.getAcoes(valorDigitado))
+    );
+  // acoes$ = this.acoesService.getAcoes(); // não fez requisição a api
+  acoes$ = merge(this.todasAcoes$, this.filtroPeloInput$);
+
+    //controle de acções do fluxo
+  
   
   // acoes: Acoes;
   // private subscription: Subscription;

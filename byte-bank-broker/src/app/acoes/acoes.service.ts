@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {map, pluck, tap} from 'rxjs/operators';
 import { Acao } from './modelo/acoes';
@@ -14,8 +14,9 @@ export class AcoesService {
 
   }
 
-  getAcoes() {
-    return this.httpClient.get<AcoesAPI>('http://localhost:3000/acoes').pipe(
+  getAcoes(valor?: string) {
+    const params = valor ? new HttpParams().append('valor', valor) : undefined;
+    return this.httpClient.get<AcoesAPI>('http://localhost:3000/acoes', {params}).pipe(
       tap(data => console.log(data)),
       // map((api) => api.payload), O pluck pode ser usado no lugar de map para extrair a propriedade que queremos
       pluck('payload'),
