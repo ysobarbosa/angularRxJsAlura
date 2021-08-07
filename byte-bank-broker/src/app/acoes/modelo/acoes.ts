@@ -9,6 +9,6 @@ export interface Acao {
     preco: number;
 }
 
-export interface acoesAPI {
+export interface AcoesAPI {
     payload: Acoes;
 }
