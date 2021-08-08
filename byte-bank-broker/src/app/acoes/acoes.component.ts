@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import {Acoes} from './modelo/acoes'
-import {AcoesService} from './acoes.service'
+import { Acoes } from './modelo/acoes';
+import { AcoesService } from './acoes.service';
 import { merge, Subscription } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, switchMap, tap } from 'rxjs/operators';
+
+const ESPERA_DIGITACAO = 300;
 
 @Component({
   selector: 'app-acoes',
@@ -12,17 +14,25 @@ import { switchMap, tap } from 'rxjs/operators';
 })
 export class AcoesComponent {
   acoesInput = new FormControl();
-  todasAcoes$ = this.acoesService.getAcoes().pipe(tap(() => console.log("Fluxo inicial")));
+  todasAcoes$ = this.acoesService
+    .getAcoes()
+    .pipe(tap(() => console.log('Fluxo inicial')));
   filtroPeloInput$ = this.acoesInput.valueChanges.pipe(
-    tap(() => console.log("Fluxo do filtro")),
+    debounceTime(ESPERA_DIGITACAO),
+    tap(() => console.log('Fluxo do filtro')),
+    tap(console.log),
+    filter((valorDigitado) => valorDigitado.length >= 3 || !valorDigitado.length),
+    distinctUntilChanged(),
     switchMap((valorDigitado) => this.acoesService.getAcoes(valorDigitado))
-    );
+  );
   // acoes$ = this.acoesService.getAcoes(); // não fez requisição a api
   acoes$ = merge(this.todasAcoes$, this.filtroPeloInput$);
 
-    //controle de acções do fluxo
-  
-  
+  //controle de acções do fluxo
+  // filter só filtra se a condicao for atendida
+  //debounceTime o fluxo deve esperar uma quantidade de milisegundos para continuar a operação, a quantidade é definida por mim
+  // DistinctUntilChanged
+
   // acoes: Acoes;
   // private subscription: Subscription;
 
