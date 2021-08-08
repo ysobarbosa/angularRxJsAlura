@@ -62,3 +62,19 @@ export class AcoesService {
   clientes$.pipe(map((clientes)=>clientes.filter((cliente)=>cliente.estado === ‘SP’ )))
 
 */
+
+
+/* 
+  Aula 03
+  Elisa recebeu a tarefa de criar uma página de produtos, e para isso ela precisa consultar duas APIs.
+
+  Na API de produtos ela tem a informação do id do produto e descrição e na API de detalhe do produto ela tem informações nutricionais, fornecedores e outras especificações técnicas.
+
+  Para consultar a API de detalhes ela precisa informar o id do produto, portanto ela precisa ligar a chamada das duas APIs.
+
+  Assinale qual das seguintes implementações é a mais recomendada para esse requisito:
+
+  produtos$.pipe(switchMap((produto)=>this.buscaDetalhesProduto(produto.id)))
+
+  Alternativa correta! O operador switchMap tem o papel de manipular o fluxo dos dados, e não o resultado, por isso nesse caso a Elisa trocou o fluxo de produtos pelo fluxo de detalhes do produto.
+*/
